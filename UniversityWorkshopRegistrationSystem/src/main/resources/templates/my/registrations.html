@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Registrations - U-WRS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <h1 class="page-title">My Registrations</h1>
+
+    <div th:if="${#lists.isEmpty(registrations)}" class="card">
+        <p>You have not registered for any workshops yet. <a th:href="@{/}">Browse workshops</a>.</p>
+    </div>
+
+    <table th:if="${not #lists.isEmpty(registrations)}">
+        <thead>
+            <tr>
+                <th>Workshop</th>
+                <th>Date/Time</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="r : ${registrations}">
+                <td th:text="${r.workshop.title}">Spring Boot Basics</td>
+                <td th:text="${#temporals.format(r.workshop.startDatetime, 'yyyy-MM-dd HH:mm')}">2026-03-02 14:00</td>
+                <td th:text="${r.workshop.location}">Hall A</td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${r.status == 'ACTIVE'} ? 'badge-active' : 'badge-cancelled'"
+                          th:text="${r.status}">ACTIVE</span>
+                </td>
+                <td>
+                    <form th:if="${r.status == 'ACTIVE'}"
+                          th:action="@{/my/registrations/{id}/cancel(id=${r.id})}"
+                          method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                    </form>
+                    <span th:if="${r.status != 'ACTIVE'}">-</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

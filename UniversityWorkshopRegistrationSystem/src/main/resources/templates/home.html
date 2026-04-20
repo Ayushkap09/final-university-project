@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Home - U-WRS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <h1 class="page-title">Upcoming Workshops</h1>
+    <p class="page-subtitle">Browse workshops and register for the ones you are interested in.</p>
+
+    <div th:if="${#lists.isEmpty(workshops)}" class="card">
+        <p>No upcoming workshops at the moment. Please check back later.</p>
+    </div>
+
+    <div th:each="w : ${workshops}" class="card">
+        <h3 th:text="${w.title}">Workshop Title</h3>
+        <div class="card-meta">
+            <strong>Location:</strong> <span th:text="${w.location}">Hall A</span><br>
+            <strong>Date &amp; Time:</strong>
+            <span th:text="${#temporals.format(w.startDatetime, 'yyyy-MM-dd HH:mm')}">2026-03-02 14:00</span><br>
+            <strong>Seats Remaining:</strong>
+            <span th:text="${w.seatsRemaining} + ' / ' + ${w.totalSeats}">12 / 30</span>
+        </div>
+        <div class="card-actions">
+            <a th:href="@{/workshops/{id}(id=${w.id})}" class="btn btn-primary btn-sm">View Details</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

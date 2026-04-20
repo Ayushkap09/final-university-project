@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${workshop.title} + ' - U-WRS'">Workshop Detail</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <a th:href="@{/}" class="btn btn-secondary btn-sm" style="margin-bottom: 1rem;">&larr; Back to list</a>
+
+    <div class="card">
+        <h1 th:text="${workshop.title}">Workshop Title</h1>
+        <div class="card-meta" style="margin-top: 0.75rem;">
+            <strong>Location:</strong> <span th:text="${workshop.location}">Hall A</span><br>
+            <strong>Start:</strong>
+            <span th:text="${#temporals.format(workshop.startDatetime, 'yyyy-MM-dd HH:mm')}">2026-03-02 14:00</span><br>
+            <strong>Seats Remaining:</strong>
+            <span th:text="${workshop.seatsRemaining} + ' / ' + ${workshop.totalSeats}">12 / 30</span><br>
+            <strong>Status:</strong>
+            <span class="badge"
+                  th:classappend="${workshop.status == 'ACTIVE'} ? 'badge-active' : 'badge-cancelled'"
+                  th:text="${workshop.status}">ACTIVE</span>
+        </div>
+
+        <hr style="margin: 1.25rem 0;">
+
+        <h3>Description</h3>
+        <p th:text="${workshop.description} ?: 'No description provided.'">Description...</p>
+
+        <div class="card-actions" style="margin-top: 1.5rem;">
+            <!-- If user is authenticated and already registered, show cancel -->
+            <div sec:authorize="isAuthenticated()">
+                <form th:if="${existingRegistrationId != null}"
+                      th:action="@{/my/registrations/{id}/cancel(id=${existingRegistrationId})}"
+                      method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Cancel Registration</button>
+                </form>
+
+                <form th:if="${existingRegistrationId == null and workshop.status == 'ACTIVE'}"
+                      th:action="@{/workshops/{id}/register(id=${workshop.id})}"
+                      method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-success"
+                            th:disabled="${workshop.seatsRemaining <= 0}"
+                            th:text="${workshop.seatsRemaining <= 0} ? 'Sold Out' : 'Register'">
+                        Register
+                    </button>
+                </form>
+
+                <p th:if="${workshop.status == 'CANCELLED'}" style="color: #dc2626; font-weight: 500;">
+                    This workshop has been cancelled.
+                </p>
+            </div>
+
+            <div sec:authorize="!isAuthenticated()">
+                <p><a th:href="@{/login}">Log in</a> to register for this workshop.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

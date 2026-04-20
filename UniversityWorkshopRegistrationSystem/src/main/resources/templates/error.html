@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error - U-WRS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div class="error-page">
+        <p class="error-code" th:text="${status} ?: 'Error'">Error</p>
+        <p class="error-message" th:text="${error} ?: 'Something went wrong.'">Something went wrong.</p>
+        <p th:if="${message}" style="color:#64748b;" th:text="${message}"></p>
+        <a th:href="@{/}" class="btn btn-primary" style="margin-top: 1rem;">Go to Home</a>
+    </div>
+</div>
+
+</body>
+</html>

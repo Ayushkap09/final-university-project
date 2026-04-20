@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin: Registrations - U-WRS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <a th:href="@{/admin/workshops}" class="btn btn-secondary btn-sm" style="margin-bottom: 1rem;">&larr; Back</a>
+    <h1 class="page-title">Registrations for <span th:text="${workshop.title}">Workshop</span></h1>
+    <p class="page-subtitle">
+        <span th:text="${#temporals.format(workshop.startDatetime, 'yyyy-MM-dd HH:mm')}">date</span>
+        | <span th:text="${workshop.location}">location</span>
+        | Seats: <span th:text="${workshop.seatsRemaining} + ' / ' + ${workshop.totalSeats}">12/30</span>
+    </p>
+
+    <div th:if="${#lists.isEmpty(registrations)}" class="card">
+        <p>No registrations yet.</p>
+    </div>
+
+    <table th:if="${not #lists.isEmpty(registrations)}">
+        <thead>
+            <tr>
+                <th>Participant</th>
+                <th>Email</th>
+                <th>Registered At</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="r : ${registrations}">
+                <td th:text="${r.user.name}">Alice</td>
+                <td th:text="${r.user.email}">alice@u.edu</td>
+                <td th:text="${#temporals.format(r.createdAt, 'yyyy-MM-dd HH:mm')}">2026-02-20 10:15</td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${r.status == 'ACTIVE'} ? 'badge-active' : 'badge-cancelled'"
+                          th:text="${r.status}">ACTIVE</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
