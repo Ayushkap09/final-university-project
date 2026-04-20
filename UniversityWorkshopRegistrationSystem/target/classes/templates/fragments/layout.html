@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:fragment="title(pageTitle)" th:text="${pageTitle} + ' - U-WRS'">U-WRS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:fragment="navbar" class="navbar">
+    <a class="brand" th:href="@{/}">U-WRS</a>
+    <div class="nav-links">
+        <a th:href="@{/}">Home</a>
+
+        <!-- Authenticated links -->
+        <a th:href="@{/my/registrations}" sec:authorize="isAuthenticated()">My Registrations</a>
+        <a th:href="@{/admin/workshops}" sec:authorize="hasRole('ADMIN')">Admin</a>
+
+        <span sec:authorize="isAuthenticated()" class="user-info">
+            <span sec:authentication="name">user</span>
+        </span>
+
+        <!-- Logout form (POST, CSRF) -->
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
+        </form>
+
+        <!-- Anonymous links -->
+        <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Login</a>
+        <a sec:authorize="!isAuthenticated()" th:href="@{/register}">Register</a>
+    </div>
+</nav>
+
+<div th:fragment="flash">
+    <div th:if="${flashSuccess}" class="flash flash-success" th:text="${flashSuccess}"></div>
+    <div th:if="${flashError}" class="flash flash-error" th:text="${flashError}"></div>
+</div>
+
+</body>
+</html>

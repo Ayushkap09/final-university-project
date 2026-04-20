@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin: Workshops - U-WRS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <h1 class="page-title">Admin: Workshops</h1>
+
+    <a th:href="@{/admin/workshops/new}" class="btn btn-primary" style="margin-bottom: 1rem;">+ Create New Workshop</a>
+
+    <div th:if="${#lists.isEmpty(workshops)}" class="card">
+        <p>No workshops yet. Create one above.</p>
+    </div>
+
+    <table th:if="${not #lists.isEmpty(workshops)}">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Start Time</th>
+                <th>Location</th>
+                <th>Seats</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="w : ${workshops}">
+                <td th:text="${w.title}">Title</td>
+                <td th:text="${#temporals.format(w.startDatetime, 'yyyy-MM-dd HH:mm')}">2026-03-02 14:00</td>
+                <td th:text="${w.location}">Loc</td>
+                <td th:text="${w.seatsRemaining} + ' / ' + ${w.totalSeats}">12/30</td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${w.status == 'ACTIVE'} ? 'badge-active' : 'badge-cancelled'"
+                          th:text="${w.status}">ACTIVE</span>
+                </td>
+                <td>
+                    <a th:href="@{/admin/workshops/{id}/edit(id=${w.id})}" class="btn btn-secondary btn-sm">Edit</a>
+                    <a th:href="@{/admin/workshops/{id}/registrations(id=${w.id})}" class="btn btn-primary btn-sm">Regs</a>
+                    <form th:if="${w.status == 'ACTIVE'}"
+                          th:action="@{/admin/workshops/{id}/cancel(id=${w.id})}"
+                          method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Cancel this workshop?');">Cancel</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

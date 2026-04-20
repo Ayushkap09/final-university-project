@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin: Workshop Form - U-WRS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container">
+    <h1 class="page-title" th:text="${isEdit} ? 'Edit Workshop' : 'Create Workshop'">Workshop Form</h1>
+
+    <div class="card">
+        <form th:action="${isEdit} ? @{/admin/workshops/{id}/edit(id=${workshopId})} : @{/admin/workshops}"
+              th:object="${workshopForm}" method="post">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" th:field="*{title}" class="form-control">
+                <div class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">title err</div>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" th:field="*{description}" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" th:field="*{location}" class="form-control">
+                <div class="field-error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}">loc err</div>
+            </div>
+            <div class="form-group">
+                <label for="startDatetime">Start Date &amp; Time</label>
+                <input type="datetime-local" id="startDatetime" th:field="*{startDatetime}" class="form-control">
+                <div class="field-error" th:if="${#fields.hasErrors('startDatetime')}" th:errors="*{startDatetime}">date err</div>
+            </div>
+            <div class="form-group">
+                <label for="totalSeats">Total Seats</label>
+                <input type="number" id="totalSeats" th:field="*{totalSeats}" class="form-control" min="1">
+                <div class="field-error" th:if="${#fields.hasErrors('totalSeats')}" th:errors="*{totalSeats}">seats err</div>
+            </div>
+
+            <div class="card-actions">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a th:href="@{/admin/workshops}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
